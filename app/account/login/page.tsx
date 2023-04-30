@@ -6,11 +6,12 @@ import Link from "next/link";
 import { z } from "Zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import Input from "../components/Input";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Button from "../components/Button";
+import SocialLogin from "../components/SocialLogin";
 
 const loginSchema = z.object({
   loginEmail: z.string().min(1, { message: "Email is required" }).email({
@@ -21,10 +22,9 @@ const loginSchema = z.object({
 });
 export type loginType = z.infer<typeof loginSchema>;
 
-interface LoginProps {}
-
-const Login: FunctionComponent<LoginProps> = () => {
+const Login: FunctionComponent = () => {
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const {
     register,
@@ -40,11 +40,13 @@ const Login: FunctionComponent<LoginProps> = () => {
       setIsLoading(false);
       if (callback?.ok) {
         toast.success("logged in");
-        router.refresh();
+        //router.refresh();
+        setTimeout(() => {
+          router.push("/account/dashboard");
+        }, 500);
       }
       if (callback?.error) {
         toast.error(callback.error);
-        console.log(callback.error);
       }
     });
   };
@@ -85,15 +87,6 @@ const Login: FunctionComponent<LoginProps> = () => {
                 {...register("loginPassword")}
               />
             </div>
-            {/* <div className="flex self-start gap-2">
-              <Input
-                id="save"
-                type="checkbox"
-                placeholder="Save login info"
-                error={errors.save}
-                {...register("save")}
-              />
-            </div> */}
             <Button type="normal" placeholder="Login" />
           </form>
           <Link
@@ -105,6 +98,7 @@ const Login: FunctionComponent<LoginProps> = () => {
           <Link href={{}} className="text-[#5386FC]">
             Forgot your password?
           </Link>
+          <SocialLogin />
         </div>
       </div>
     </div>

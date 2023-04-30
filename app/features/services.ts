@@ -1,6 +1,5 @@
 import axios from "axios";
-import { registerType } from "../account/signup/page";
-import { log } from "console";
+import { RegisterUserType } from "../account/signup/page";
 
 export interface GenericResponse {
   status: string;
@@ -16,9 +15,8 @@ export const authApi = axios.create({
 
 authApi.defaults.headers.common["Content-Type"] = "application/json";
 
-export const signUpUserFn = async (user: registerType) => {
+export const signUpUserFn = async (user: RegisterUserType) => {
   const response = await authApi.post<GenericResponse>("register", user);
-  console.log(response.data);
 
   return response.data;
 };

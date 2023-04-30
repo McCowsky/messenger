@@ -5,13 +5,13 @@ import Image from "next/image";
 import { z } from "Zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import toast, { Toaster } from "react-hot-toast";
-import { useMutation } from "@tanstack/react-query";
-import { signUpUserFn } from "@/app/features/services";
 import Input from "../components/Input";
 import Button from "../components/Button";
+import SocialLogin from "../components/SocialLogin";
+import { useRegisterUser } from "@/app/features/mutations";
 
-interface SignupProps {}
+//  TODO:
+//  - add loading spinner while mutate
 
 const registerSchema = z
   .object({
@@ -28,49 +28,20 @@ const registerSchema = z
     path: ["confirmPassword"],
     message: "Password don't match",
   });
-export type registerType = z.infer<typeof registerSchema>;
+export type RegisterUserType = z.infer<typeof registerSchema>;
 
-const Signup: FunctionComponent<SignupProps> = () => {
+const Signup: FunctionComponent = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<registerType>({
+  } = useForm<RegisterUserType>({
     resolver: zodResolver(registerSchema),
   });
 
-  const {
-    mutate: registerUser,
-    data,
-    isSuccess,
-  } = useMutation((userData: registerType) => signUpUserFn(userData), {
-    onMutate(variables) {
-      // store.setRequestLoading(true);
-    },
-    onSuccess(data) {
-      //  store.setRequestLoading(false);
-      toast.success(data?.message);
-    },
-    onError(error: any) {
-      // store.setRequestLoading(false);
-      console.log(error.message);
-      toast.error(error.message);
-      if (Array.isArray((error as any).response.data.error)) {
-        (error as any).response.data.error.forEach((el: any) =>
-          toast.error(el.message, {
-            position: "top-right",
-          })
-        );
-      } else {
-        toast.error((error as any).response.data.message, {
-          position: "top-right",
-        });
-      }
-    },
-  });
+  const { mutate: registerUser } = useRegisterUser();
 
-  const onSubmit: SubmitHandler<registerType> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<RegisterUserType> = (data) => {
     registerUser(data);
   };
 
@@ -136,10 +107,8 @@ const Signup: FunctionComponent<SignupProps> = () => {
           >
             Login with existing account
           </Link>
+          <SocialLogin />
         </div>
-        <Link href={""} className="text-[#5386FC]">
-          Forgot your password?
-        </Link>
       </div>
     </div>
   );
