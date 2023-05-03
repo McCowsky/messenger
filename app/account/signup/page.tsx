@@ -18,6 +18,10 @@ const registerSchema = z
     email: z.string().min(1, { message: "Email is required" }).email({
       message: "Must be a valid email",
     }),
+    name: z
+      .string()
+      .min(3, { message: "Name must be at least 3 characters" })
+      .max(20, { message: "Name cannot be longer than 20 characters" }),
     password: z.string().min(8, { message: "Password must be at least 8 characters" }),
     confirmPassword: z.string().min(1, { message: "Confirm Password is required" }),
     terms: z.literal(true, {
@@ -65,6 +69,13 @@ const Signup: FunctionComponent = () => {
             className="w-full flex flex-col gap-3 justify-center items-center"
           >
             <div className="flex flex-col w-full justify-center items-center gap-1">
+              <Input
+                id="name"
+                type="text"
+                placeholder="Name"
+                error={errors.name}
+                {...register("name")}
+              />
               <Input
                 id="email"
                 type="email"

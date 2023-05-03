@@ -7,13 +7,14 @@ import { User } from "@prisma/client";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { email, password } = body;
+  const { email, name, password } = body;
   const hashedPassword: string = await bcrypt.hash(password, 12);
   const EMAIL_VERIFICATION_SECRET = "EMAIL_VERIFICATION_SECRET";
 
   const user: User = await prisma.user.create({
     data: {
       email,
+      name,
       hashedPassword,
     },
   });

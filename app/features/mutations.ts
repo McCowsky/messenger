@@ -1,9 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
-import { signUpUserFn, verifyEmailFn } from "./services";
+import { signUpUserFn } from "./services";
 import { RegisterUserType } from "../account/signup/page";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
-import { VerifyType } from "../account/verifyemail/page";
 
 export const useRegisterUser = () => {
   return useMutation({
@@ -24,20 +23,3 @@ export const useRegisterUser = () => {
   });
 };
 
-export const useVerifyEmail = () => {
-  console.log("jeden");
-
-  return useMutation({
-    mutationFn: (data: VerifyType) => verifyEmailFn(data),
-    onMutate: () => {
-      //     // store.setRequestLoading(true);
-    },
-    onSuccess: () => {
-      //     //  store.setRequestLoading(false);
-    },
-    onError: (error: AxiosError) => {
-      //     // store.setRequestLoading(false);
-      toast.error(error.message);
-    },
-  });
-};
