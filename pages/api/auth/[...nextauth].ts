@@ -8,6 +8,7 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import NextAuth from "next-auth/next";
+
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -37,6 +38,7 @@ export const authOptions: AuthOptions = {
         if (!user?.email || !user?.hashedPassword) {
           throw new Error("User doesn't exist");
         }
+        if (user.emailVerified === null) throw new Error("Account not verified");
 
         const isCorrectPassword = await bcrypt.compare(
           credentials.loginPassword,
@@ -45,6 +47,7 @@ export const authOptions: AuthOptions = {
         if (!isCorrectPassword) {
           throw new Error("Incorrect password");
         }
+
         return user;
       },
     }),
@@ -56,6 +59,7 @@ export const authOptions: AuthOptions = {
   session: {
     strategy: "jwt",
   },
+  jwt: {},
   secret: process.env.NEXTAUTH_SECRET,
 };
 

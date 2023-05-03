@@ -1,6 +1,7 @@
 "use client";
-import { FunctionComponent, forwardRef } from "react";
+import { forwardRef } from "react";
 import { FieldError } from "react-hook-form";
+
 interface InputProps {
   id: string;
   type: string;
@@ -31,26 +32,5 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     );
   }
 );
-
-// const Input1: FunctionComponent<InputProps> = ({
-//   id,
-//   type,
-//   placeholder,
-//   error,
-//   ...props
-// }) => {
-//   return (
-//     <div>
-//       <input
-//         type={type}
-//         id={id}
-//         placeholder={placeholder}
-//         {...props}
-//         className="p-3 border-2 w-full"
-//       />
-//       {error && <p>{error.message}</p>}
-//     </div>
-//   );
-// };
 
 export default Input;

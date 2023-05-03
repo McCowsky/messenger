@@ -3,9 +3,9 @@ import { signOut } from "next-auth/react";
 import { FunctionComponent } from "react";
 import { useSession } from "next-auth/react";
 
-interface DashboardProps {}
+//interface DashboardProps {}
 
-const Dashboard: FunctionComponent<DashboardProps> = () => {
+const Dashboard: FunctionComponent = () => {
   const session = useSession();
 
   return (

@@ -1,13 +1,15 @@
 import "./globals.css";
 import { Nunito } from "next/font/google";
-const font = Nunito({ subsets: ["latin"] });
 import QueryProvider from "./features/providers/QueryProvider";
 import ToasterProvider from "./features/providers/ToasterProvider";
 import NextSessionProvider from "./features/providers/SessionProvider";
+import { NextFont } from "next/dist/compiled/@next/font";
 export const metadata = {
   title: "Messenger",
   description: "Messenger clone",
 };
+
+const font: NextFont = Nunito({ subsets: ["latin"] });
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

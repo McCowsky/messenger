@@ -35,7 +35,6 @@ const Login: FunctionComponent = () => {
   });
 
   const onSubmit: SubmitHandler<loginType> = (data) => {
-    console.log(data);
     signIn("credentials", { ...data, redirect: false }).then((callback) => {
       setIsLoading(false);
       if (callback?.ok) {
@@ -43,7 +42,7 @@ const Login: FunctionComponent = () => {
         //router.refresh();
         setTimeout(() => {
           router.push("/account/dashboard");
-        }, 500);
+        }, 400);
       }
       if (callback?.error) {
         toast.error(callback.error);
@@ -78,7 +77,6 @@ const Login: FunctionComponent = () => {
                 error={errors.loginEmail}
                 {...register("loginEmail")}
               />
-
               <Input
                 id="loginPassword"
                 type="password"
