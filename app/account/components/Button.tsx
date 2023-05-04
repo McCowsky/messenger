@@ -1,13 +1,15 @@
 import { FunctionComponent } from "react";
 import { AiOutlineGoogle } from "react-icons/ai";
 import { FaFacebookF } from "react-icons/fa";
+import { ImSpinner2 } from "react-icons/im";
 
 interface ButtonProps {
   type: "normal" | "social";
   placeholder: string;
+  isLoading?: boolean;
 }
 
-const Button: FunctionComponent<ButtonProps> = ({ type, placeholder }) => {
+const Button: FunctionComponent<ButtonProps> = ({ type, placeholder, isLoading }) => {
   return (
     <button
       className={` ${type === "normal" ? "w-full" : "w-fit"} ${
@@ -21,7 +23,8 @@ const Button: FunctionComponent<ButtonProps> = ({ type, placeholder }) => {
       {placeholder === "Google" && <AiOutlineGoogle />}
       {placeholder === "Facebook" && <FaFacebookF />}
 
-      {placeholder}
+      {!isLoading && placeholder}
+      {isLoading && <ImSpinner2 className="animate-spin" />}
     </button>
   );
 };

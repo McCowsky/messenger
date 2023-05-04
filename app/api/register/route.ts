@@ -20,7 +20,13 @@ export async function POST(request: NextRequest) {
   });
 
   const { id, email: returnedEmail } = user;
-  const payload = { id, returnedEmail };
+  if (id === null || returnedEmail === null)
+    return NextResponse.json("Something went wrong");
+  
+  const payload: {
+    id: string;
+    returnedEmail: string;
+  } = { id, returnedEmail };
 
   const token: string = jwt.sign({ payload }, EMAIL_VERIFICATION_SECRET + email, {
     expiresIn: "1d",

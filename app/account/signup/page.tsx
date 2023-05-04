@@ -10,9 +10,6 @@ import Button from "../components/Button";
 import SocialLogin from "../components/SocialLogin";
 import { useRegisterUser } from "@/app/features/mutations";
 
-//  TODO:
-//  - add loading spinner while mutate
-
 const registerSchema = z
   .object({
     email: z.string().min(1, { message: "Email is required" }).email({
@@ -43,7 +40,7 @@ const Signup: FunctionComponent = () => {
     resolver: zodResolver(registerSchema),
   });
 
-  const { mutate: registerUser } = useRegisterUser();
+  const { mutate: registerUser, isLoading } = useRegisterUser();
 
   const onSubmit: SubmitHandler<RegisterUserType> = (data) => {
     registerUser(data);
@@ -110,7 +107,7 @@ const Signup: FunctionComponent = () => {
               />
             </div>
 
-            <Button type="normal" placeholder="Register" />
+            <Button type="normal" placeholder="Register" isLoading={isLoading}/>
           </form>
           <Link
             href="/account/login"

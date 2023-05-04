@@ -8,18 +8,13 @@ export const useRegisterUser = () => {
   return useMutation({
     mutationFn: (formData: RegisterUserType) => signUpUserFn(formData),
     onMutate: () => {
-      //     // store.setRequestLoading(true);
+      //
     },
     onSuccess: () => {
-      //     //  store.setRequestLoading(false);
-
-      toast.success("User registered succesfully");
+      toast.success("User registered succesfully, verification email has been sent");
     },
     onError: (error: AxiosError) => {
-      //     // store.setRequestLoading(false);
-
       toast.error(error.message);
     },
   });
 };
-
