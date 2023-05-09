@@ -1,9 +1,22 @@
 "use client";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 
 export default function Home() {
   const session = useSession();
-  if (session.status === "unauthenticated") redirect("/account/login");
-  if (session.status === "authenticated") redirect("/account/dashboard");
+  const router = useRouter();
+
+  useEffect(() => {
+    if (session.status === "authenticated") {
+      setTimeout(() => {
+        router.push("/account/dashboard");
+      }, 400);
+    }
+    if (session.status === "unauthenticated") {
+      setTimeout(() => {
+        router.push("/account/login");
+      }, 400);
+    }
+  }, [session.status, router]);
 }

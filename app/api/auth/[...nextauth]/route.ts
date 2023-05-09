@@ -1,6 +1,6 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { AuthOptions } from "next-auth";
-import prisma from "../../../app/libs/prismadb";
+import prisma from "../../../libs/prismadb";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import GithubProvider from "next-auth/providers/github";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -12,14 +12,6 @@ import NextAuth from "next-auth/next";
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
-    // GithubProvider({
-    //   clientId: process.env.GITHUB_ID as string,
-    //   clientSecret: process.env.GITHUB_SECRET as string,
-    // }),
-    // GoogleProvider({
-    //   clientId: process.env.GOOGLE_CLIENT_ID as string,
-    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-    // }),
     CredentialProvider({
       name: "credentials",
       credentials: {
@@ -35,6 +27,7 @@ export const authOptions: AuthOptions = {
             email: credentials.loginEmail,
           },
         });
+
         if (!user?.email || !user?.hashedPassword) {
           throw new Error("User doesn't exist");
         }
@@ -51,6 +44,14 @@ export const authOptions: AuthOptions = {
         return user;
       },
     }),
+    GoogleProvider({
+      clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET as string,
+    }),
+    GithubProvider({
+      clientId: process.env.NEXT_PUBLIC_GITHUB_ID as string,
+      clientSecret: process.env.NEXT_PUBLIC_GITHUB_SECRET as string,
+    }),
   ],
   pages: {
     signIn: "/account/login",
@@ -63,4 +64,6 @@ export const authOptions: AuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
 };
 
-export default NextAuth(authOptions);
+const handler = NextAuth(authOptions);
+
+export { handler as GET, handler as POST };

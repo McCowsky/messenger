@@ -9,7 +9,6 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
   const { email, name, password } = body;
   const hashedPassword: string = await bcrypt.hash(password, 12);
-  const EMAIL_VERIFICATION_SECRET = "EMAIL_VERIFICATION_SECRET";
 
   const user: User = await prisma.user.create({
     data: {
@@ -22,15 +21,19 @@ export async function POST(request: NextRequest) {
   const { id, email: returnedEmail } = user;
   if (id === null || returnedEmail === null)
     return NextResponse.json("Something went wrong");
-  
+
   const payload: {
     id: string;
     returnedEmail: string;
   } = { id, returnedEmail };
 
-  const token: string = jwt.sign({ payload }, EMAIL_VERIFICATION_SECRET + email, {
-    expiresIn: "1d",
-  });
+  const token: string = jwt.sign(
+    { payload },
+    process.env.NEXT_PUBLIC_EMAIL_VERIFICATION_SECRET + email,
+    {
+      expiresIn: "1d",
+    }
+  );
 
   await sendEmail({
     to: email,

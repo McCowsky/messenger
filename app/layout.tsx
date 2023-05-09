@@ -16,8 +16,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={font.className}>
         <QueryProvider>
-          <ToasterProvider />
           <NextSessionProvider>
+            <ToasterProvider />
             <div className=" min-h-screen max-w-[375px]  mx-auto my-0 flex flex-col items-center justify-center ">
               {children}
             </div>

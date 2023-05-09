@@ -1,17 +1,18 @@
 "use client";
 
-import { FunctionComponent, useState } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { z } from "Zod";
+
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 import Input from "../components/Input";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import Button from "../components/Button";
 import SocialLogin from "../components/SocialLogin";
+import { z } from "zod";
+import { ImSpinner2 } from "react-icons/im";
 
 const loginSchema = z.object({
   loginEmail: z.string().min(1, { message: "Email is required" }).email({
@@ -23,6 +24,7 @@ const loginSchema = z.object({
 export type loginType = z.infer<typeof loginSchema>;
 
 const Login: FunctionComponent = () => {
+  const session = useSession();
   const router = useRouter();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -34,20 +36,32 @@ const Login: FunctionComponent = () => {
     resolver: zodResolver(loginSchema),
   });
 
+  useEffect(() => {
+    if (session.status === "authenticated") {
+      setTimeout(() => {
+        router.push("/account/dashboard");
+      }, 400);
+    }
+  }, [session.status, router]);
+
   const onSubmit: SubmitHandler<loginType> = (data) => {
-    signIn("credentials", { ...data, redirect: false }).then((callback) => {
-      setIsLoading(false);
-      if (callback?.ok) {
-        toast.success("logged in");
-        //router.refresh();
-        setTimeout(() => {
-          router.push("/account/dashboard");
-        }, 400);
-      }
-      if (callback?.error) {
-        toast.error(callback.error);
-      }
-    });
+    setIsLoading(true);
+    signIn("credentials", { ...data, redirect: false })
+      .then((callback) => {
+        if (callback?.error) {
+          toast.error(callback.error);
+        }
+        if (callback?.ok && !callback.error) {
+          toast.success("logged in");
+          //router.refresh();
+          setTimeout(() => {
+            router.push("/account/dashboard");
+          }, 400);
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -85,15 +99,24 @@ const Login: FunctionComponent = () => {
                 {...register("loginPassword")}
               />
             </div>
-            <Button type="normal" placeholder="Login" />
+            <button className="w-full bg-[#5386FC] hover:bg-[#1c60ff] text-white border-[0px] hover:text-white p-3 font-semibold rounded-2xl  transition flex justify-center items-center gap-2">
+              {isLoading ? <ImSpinner2 className="animate-spin" /> : "Login"}
+            </button>
           </form>
           <Link
-            href="/account/signup"
-            className="w-full bg-[#303030] text-white text-center p-3 font-semibold rounded-2xl "
+            href={!isLoading ? `/account/signup` : {}}
+            className={`w-full bg-[#303030] text-white text-center p-3 font-semibold rounded-2xl ${
+              isLoading ? "cursor-none" : "cursor-pointer"
+            }`}
+            onClick={(event) => (isLoading ? event.preventDefault() : null)}
           >
             Create New Account
           </Link>
-          <Link href={{}} className="text-[#5386FC]">
+          <Link
+            href={!isLoading ? `` : {}}
+            className={`text-[#5386FC] ${isLoading ? "cursor-none" : "cursor-pointer"}`}
+            onClick={(event) => (isLoading ? event.preventDefault() : null)}
+          >
             Forgot your password?
           </Link>
           <SocialLogin />

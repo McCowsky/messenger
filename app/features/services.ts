@@ -6,10 +6,8 @@ export interface GenericResponse {
   message: string;
 }
 
-const BASE_URL = "http://localhost:3000/api/";
-
 export const authApi: AxiosInstance = axios.create({
-  baseURL: BASE_URL,
+  baseURL: process.env.NEXT_PUBLIC_BASE_URL,
   withCredentials: true,
 });
 

@@ -1,14 +1,13 @@
 "use client";
 import { FunctionComponent } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { z } from "Zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Input from "../components/Input";
-import Button from "../components/Button";
 import SocialLogin from "../components/SocialLogin";
 import { useRegisterUser } from "@/app/features/mutations";
+import { z } from "zod";
+import { ImSpinner2 } from "react-icons/im";
 
 const registerSchema = z
   .object({
@@ -42,20 +41,20 @@ const Signup: FunctionComponent = () => {
 
   const { mutate: registerUser, isLoading } = useRegisterUser();
 
-  const onSubmit: SubmitHandler<RegisterUserType> = (data) => {
+  const onSubmit: SubmitHandler<RegisterUserType> = (data: RegisterUserType) => {
     registerUser(data);
   };
 
   return (
     <div className="flex flex-col items-center justify-center gap-8">
-      <Image
+      {/* <Image
         src="/logo.svg"
         alt="Logo"
         width={175}
         height={175}
         priority={true}
         className="w-[175px] h-[175px]"
-      />
+      /> */}
       <div className="flex flex-col justify-center items-center gap-8">
         <p className="text-2xl font-extrabold text-center px-4">
           Create new Messenger Account
@@ -106,15 +105,22 @@ const Signup: FunctionComponent = () => {
                 {...register("terms")}
               />
             </div>
-
-            <Button type="normal" placeholder="Register" isLoading={isLoading}/>
+            <button className="w-full bg-[#5386FC] hover:bg-[#1c60ff] text-white border-[0px] hover:text-white p-3 font-semibold rounded-2xl  transition flex justify-center items-center gap-2">
+              {isLoading ? <ImSpinner2 className="animate-spin" /> : "Register"}
+            </button>
           </form>
           <Link
-            href="/account/login"
-            className="w-full bg-[#303030] text-white text-center p-3 font-semibold rounded-2xl "
+            href={!isLoading ? `/account/login` : {}}
+            className={`w-full bg-[#303030] text-white text-center p-3 font-semibold rounded-2xl ${
+              isLoading ? "cursor-none" : "cursor-pointer"
+            }`}
+            onClick={(event: React.MouseEvent<HTMLAnchorElement>) =>
+              isLoading ? event.preventDefault() : null
+            }
           >
             Login with existing account
           </Link>
+
           <SocialLogin />
         </div>
       </div>
