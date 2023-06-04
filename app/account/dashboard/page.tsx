@@ -1,17 +1,22 @@
-"use client";
 import { signOut } from "next-auth/react";
-import { FunctionComponent } from "react";
-import { useSession } from "next-auth/react";
+import { AiOutlineSearch } from "react-icons/ai";
+import getCurrentUser from "@/app/features/actions/getCurrentUser";
+import TitleBar from "./components/TitleBar";
+import Logout from "./components/Logout";
 
 //interface DashboardProps {}
 
-const Dashboard: FunctionComponent = () => {
-  const session = useSession();
-
+const Dashboard = async () => {
+  const currentUser = await getCurrentUser();
   return (
-    <div>
-      <h1>{session.data?.user?.email}</h1>
-      <button onClick={() => signOut()}>logout</button>
+    <div className="flex flex-col items-center justify-center w-full px-4">
+      <TitleBar currentUser={currentUser} />
+      <div className="relative">
+        <AiOutlineSearch />
+        <input type="text" placeholder="&#x1F50D; " />
+      </div>
+      <h1>{currentUser?.email}</h1>
+      <Logout />
     </div>
   );
 };
